@@ -57,7 +57,9 @@ export const GraphCanvas = forwardRef<SVGSVGElement, GraphCanvasProps>(
           </marker>
         </defs>
 
-        <g transform={gTransform}>{children?.({ arrowId, gTransform })}</g>
+        <g data-root transform={gTransform}>
+          {children?.({ arrowId, gTransform })}
+        </g>
       </svg>
     );
   }

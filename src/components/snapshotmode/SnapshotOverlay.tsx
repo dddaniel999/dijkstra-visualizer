@@ -165,8 +165,8 @@ export default function SnapshotOverlay({
   }, []);
 
   function clientXYToSvgGraph(svg: SVGSVGElement, cx: number, cy: number) {
-    // client px -> SVG user space (viewBox units)
-    const ctm = svg.getScreenCTM();
+    const g = svg.querySelector("g[data-root]") as SVGGElement | null;
+    const ctm = g?.getScreenCTM();
     if (!ctm) return { x: 0, y: 0 };
 
     const pt = svg.createSVGPoint();
@@ -175,8 +175,8 @@ export default function SnapshotOverlay({
     const sp = pt.matrixTransform(ctm.inverse()); // sp in viewBox units
 
     return {
-      x: (sp.x - tx) / scale,
-      y: (sp.y - ty) / scale,
+      x: sp.x,
+      y: sp.y,
     };
   }
 

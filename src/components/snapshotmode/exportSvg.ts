@@ -10,12 +10,13 @@ export async function exportSvgRegionToPng(
   clone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
   (clone.style as any).background = "none";
 
-  clone.setAttribute(
-    "viewBox",
-    `${region.x} ${region.y} ${region.w} ${region.h}`
-  );
-  clone.setAttribute("width", `${region.w}px`);
-  clone.setAttribute("height", `${region.h}px`);
+  const g = clone.querySelector("g[data-root]") as SVGGElement | null;
+  if (g) g.removeAttribute("transform");
+
+  const vw = Math.max(1, region.w);
+  const vh = Math.max(1, region.h);
+  clone.setAttribute("viewBox", `${region.x} ${region.y} ${vw} ${vh}`);
+  clone.setAttribute("preserveAspectRatio", "none");
 
   const svgData = new XMLSerializer().serializeToString(clone);
   const blob = new Blob([svgData], { type: "image/svg+xml; charset=utf-8" });
@@ -25,10 +26,12 @@ export async function exportSvgRegionToPng(
     const img = await loadImage(url);
 
     const canvas = document.createElement("canvas");
-    canvas.width = Math.max(1, Math.floor(region.w * dpiScale));
-    canvas.height = Math.max(1, Math.floor(region.h * dpiScale));
+    canvas.width = Math.max(1, Math.floor(vw * dpiScale));
+    canvas.height = Math.max(1, Math.floor(vh * dpiScale));
 
     const ctx = canvas.getContext("2d")!;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
@@ -47,6 +50,7 @@ function loadImage(url: string) {
     img.src = url;
   });
 }
+
 function triggerDownload(dataUrl: string, filename: string) {
   const a = document.createElement("a");
   a.href = dataUrl;

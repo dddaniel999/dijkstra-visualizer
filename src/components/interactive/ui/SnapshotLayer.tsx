@@ -76,18 +76,18 @@ export function DijkstraSnapshotLayer({
               labels={labels}
               selectedId={selected}
             />
-            <SnapshotOverlay
-              svgRef={svgRef}
-              tx={snap?.tx ?? tx}
-              ty={snap?.ty ?? ty}
-              scale={snap?.s ?? scale}
-            />
           </div>
+          <SnapshotOverlay
+            svgRef={svgRef}
+            tx={snap?.tx ?? tx}
+            ty={snap?.ty ?? ty}
+            scale={snap?.s ?? scale}
+          />
         </div>
 
         <div className="absolute bottom-4 left-2 text-white/80 text-sm bg-black/50 px-3 py-1 rounded z-10">
           <p>S / Escape - Toggle snapshot mode</p>
-          <p>Shift (hold) - lock aspect ratio</p>
+          <p>Shift (hold) - lock aspect ratio while resizing</p>
           <p>Enter - Export PNG with current settings</p>
         </div>
       </SnapshotModal>
